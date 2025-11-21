@@ -1,6 +1,7 @@
 <aside class="sidebar">
   <div class="sidebar-header">
-    <img src="../../assets/img/ZPPUS-CICS LOGO.jpg" alt="ZPPSU CICS Logo" class="sidebar-logo">
+    <h2 class="sidebar-title">ZPPSU CICS</h2>
+    <p class="sidebar-subtitle">Attendance System</p>
   </div>
   <nav class="sidebar-nav">
     <a href="dashboard.php" class="sidebar-nav-item <?php echo ($activePage === 'dashboard') ? 'active' : ''; ?>">

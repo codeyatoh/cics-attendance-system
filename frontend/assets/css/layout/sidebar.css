@@ -16,16 +16,6 @@
 .sidebar-header {
   padding: var(--spacing-lg);
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.sidebar-logo {
-  width: 100%;
-  max-width: 70px;
-  height: auto;
-  object-fit: contain;
 }
 
 .sidebar-title {
