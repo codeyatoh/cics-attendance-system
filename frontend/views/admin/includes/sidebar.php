@@ -1,5 +1,7 @@
 <aside class="sidebar">
-  \u003cdiv class="sidebar-header"\u003e\r\n    \u003cimg src="https://uploadthingy.s3.us-west-1.amazonaws.com/qHYtTa1uNrpFjc66NgGcuM/ZPPUS-CICS_LOGO.jpg" alt="CICS Logo" class="sidebar-logo"\u003e\r\n  \u003c/div\u003e
+  <div class="sidebar-header">
+    <img src="../../assets/img/ZPPUS-CICS LOGO.jpg" alt="ZPPSU CICS Logo" class="sidebar-logo">
+  </div>
   <nav class="sidebar-nav">
     <a href="dashboard.php" class="sidebar-nav-item <?php echo ($activePage === 'dashboard') ? 'active' : ''; ?>">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
