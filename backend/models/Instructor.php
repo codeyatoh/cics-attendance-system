@@ -42,7 +42,7 @@ class Instructor {
         $sql = "SELECT i.*, u.email, u.status as user_status
                 FROM instructors i
                 JOIN users u ON i.user_id = u.id
-                WHERE 1=1";
+                WHERE u.status != 'inactive'";
         $params = [];
 
         if (!empty($filters['department'])) {
@@ -58,6 +58,28 @@ class Instructor {
         $sql .= " ORDER BY i.last_name, i.first_name";
 
         return $this->db->fetchAll($sql, $params);
+    }
+
+    public function update($id, $data) {
+        $fields = [];
+        $params = [':id' => $id];
+
+        $allowedFields = ['first_name', 'last_name', 'department', 'employee_id'];
+        
+        foreach ($allowedFields as $field) {
+            if (array_key_exists($field, $data)) {
+                $fields[] = "$field = :$field";
+                $params[":$field"] = $data[$field];
+            }
+        }
+
+        if (empty($fields)) {
+            return false;
+        }
+
+        $sql = "UPDATE instructors SET " . implode(', ', $fields) . " WHERE id = :id";
+        $this->db->query($sql, $params);
+        return true;
     }
 }
 

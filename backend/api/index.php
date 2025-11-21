@@ -156,12 +156,38 @@ try {
                     break;
 
                 case 'instructors':
-                    if ($method === 'GET') {
-                        $adminController->getAllInstructors();
-                    } elseif ($method === 'POST') {
-                        $adminController->createInstructor();
+                    // Handle instructors routes: /admin/instructors or /admin/instructors/{id}
+                    if (isset($segments[2]) && is_numeric($segments[2])) {
+                        // Route with ID: /admin/instructors/{id}
+                        $_GET['id'] = $segments[2];
+                        if ($method === 'PUT') {
+                            $adminController->updateInstructor();
+                        } else {
+                            Response::error('Method not allowed', null, 405);
+                        }
                     } else {
-                        Response::error('Method not allowed', null, 405);
+                        // Route without ID: /admin/instructors
+                        if ($method === 'GET') {
+                            $adminController->getAllInstructors();
+                        } elseif ($method === 'POST') {
+                            $adminController->createInstructor();
+                        } else {
+                            Response::error('Method not allowed', null, 405);
+                        }
+                    }
+                    break;
+
+                case 'users':
+                    // Handle users routes: /admin/users/{id}
+                    if (isset($segments[2]) && is_numeric($segments[2])) {
+                        $_GET['id'] = $segments[2];
+                        if ($method === 'DELETE') {
+                            $adminController->archiveUser();
+                        } else {
+                            Response::error('Method not allowed', null, 405);
+                        }
+                    } else {
+                        Response::error('User ID is required', null, 400);
                     }
                     break;
                     
@@ -212,6 +238,21 @@ try {
                         } else {
                             Response::error('Method not allowed', null, 405);
                         }
+                    }
+                    break;
+                    
+                case 'settings':
+                    // Handle settings routes: /admin/settings/campus
+                    if (isset($segments[2]) && $segments[2] === 'campus') {
+                        if ($method === 'GET') {
+                            $adminController->getCampusSettings();
+                        } elseif ($method === 'PUT') {
+                            $adminController->updateCampusSettings();
+                        } else {
+                            Response::error('Method not allowed', null, 405);
+                        }
+                    } else {
+                        Response::notFound('Settings endpoint not found');
                     }
                     break;
                     
