@@ -24,7 +24,7 @@ class Subject {
             ':program' => $data['program'],
             ':year_level' => $data['year_level'],
             ':section' => $data['section'],
-            ':schedule' => isset($data['schedule']) ? json_encode($data['schedule']) : null,
+            ':schedule' => $data['schedule'],
             ':room' => $data['room'] ?? null
         ];
 
@@ -43,9 +43,7 @@ class Subject {
                 LIMIT 1";
         $result = $this->db->fetchOne($sql, [':id' => $id]);
         
-        if ($result && $result['schedule']) {
-            $result['schedule'] = json_decode($result['schedule'], true);
-        }
+        // Schedule is now plain text, no JSON decoding needed
         
         return $result;
     }
@@ -89,12 +87,7 @@ class Subject {
 
         $results = $this->db->fetchAll($sql, $params);
         
-        // Decode JSON schedule for each result
-        foreach ($results as &$result) {
-            if ($result['schedule']) {
-                $result['schedule'] = json_decode($result['schedule'], true);
-            }
-        }
+        // Schedule is now plain text, no JSON decoding needed
         
         return $results;
     }
@@ -119,7 +112,7 @@ class Subject {
             ':program' => $data['program'],
             ':year_level' => $data['year_level'],
             ':section' => $data['section'],
-            ':schedule' => isset($data['schedule']) ? json_encode($data['schedule']) : null,
+            ':schedule' => $data['schedule'],
             ':room' => $data['room'] ?? null
         ];
 

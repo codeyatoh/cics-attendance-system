@@ -136,9 +136,8 @@ $activePage = 'subjects';
               <input type="text" id="subjectRoom" name="room" class="form-control" maxlength="50">
             </div>
             <div class="form-field form-group" style="grid-column: span 2;">
-              <label for="subjectSchedule">Schedule (JSON Format - Optional)</label>
-              <textarea id="subjectSchedule" name="schedule" class="form-control" rows="3" placeholder='{"day": "Monday", "start_time": "08:00", "end_time": "11:00"}'></textarea>
-              <p class="helper-text">Enter schedule in JSON format. Example: {"day": "Monday", "start_time": "08:00", "end_time": "11:00"} or leave empty.</p>
+              <label for="subjectSchedule">Schedule <span class="text-danger">*</span></label>
+              <textarea id="subjectSchedule" name="schedule" class="form-control" rows="3" placeholder="e.g., Monday, Wednesday, Friday 8:00 AM - 11:00 AM" required></textarea>
             </div>
           </div>
         </div>
@@ -351,15 +350,8 @@ $activePage = 'subjects';
           document.getElementById('subjectYearLevel').value = subject.year_level || '';
           document.getElementById('subjectSection').value = subject.section || '';
           document.getElementById('subjectRoom').value = subject.room || '';
-          // Handle schedule - if it's an object, stringify it; if it's already a string, use it; otherwise empty
-          if (subject.schedule) {
-            const scheduleValue = typeof subject.schedule === 'object' 
-              ? JSON.stringify(subject.schedule) 
-              : subject.schedule;
-            document.getElementById('subjectSchedule').value = scheduleValue;
-          } else {
-            document.getElementById('subjectSchedule').value = '';
-          }
+          // Handle schedule - now plain text
+          document.getElementById('subjectSchedule').value = subject.schedule || '';
 
           loadInstructors();
           setTimeout(() => {
@@ -385,17 +377,12 @@ $activePage = 'subjects';
 
         const formData = new FormData(elements.subjectForm);
         
-        // Parse schedule JSON if provided
-        let schedule = null;
-        const scheduleInput = formData.get('schedule')?.trim();
-        if (scheduleInput) {
-          try {
-            schedule = JSON.parse(scheduleInput);
-          } catch (e) {
-            Toast.error('Invalid JSON format in Schedule field. Please check the format.');
-            setSavingState(false);
-            return;
-          }
+        // Get schedule as plain text (required)
+        const schedule = formData.get('schedule')?.trim();
+        if (!schedule) {
+          Toast.error('Schedule is required.');
+          setSavingState(false);
+          return;
         }
         
         const payload = {
