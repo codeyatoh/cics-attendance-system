@@ -457,7 +457,7 @@ $activePage = 'campus';
         let bestPosition = null;
         let attempts = 0;
         const startTime = Date.now();
-        const maxWaitTime = 10000; // Reduced to 10 seconds for speed
+        const maxWaitTime = 5000; // Reduced to 5 seconds
 
         // GPS options for maximum accuracy
         const gpsOptions = {
@@ -496,23 +496,19 @@ $activePage = 'campus';
               bestPosition = position;
             }
 
-            // Adaptive Strategy:
-            // 1. Excellent accuracy (< 10m) -> Stop immediately
-            // 2. Good accuracy (< 20m) AND > 2 seconds elapsed -> Stop
-            // 3. Decent accuracy (< 50m) AND > 5 seconds elapsed -> Stop
+            // Adaptive Strategy (Instant Speed):
+            // 1. Good enough (< 200m) -> Stop immediately (Instant for you)
+            // 2. Usable (< 1000m) AND > 2 seconds elapsed -> Stop
             
-            if (accuracy <= 10) {
+            if (accuracy <= 200) {
               finish(bestPosition);
-            } else if (accuracy <= 20 && elapsed > 2000) {
-              finish(bestPosition);
-            } else if (accuracy <= 50 && elapsed > 5000) {
+            } else if (accuracy <= 1000 && elapsed > 2000) {
               finish(bestPosition);
             } else {
               // Update button with current accuracy
               elements.getCurrentLocationBtn.innerHTML = `<span class="spinner" style="width: 16px; height: 16px;"></span> Improving... (${Math.round(accuracy)}m)`;
             }
           },
-
           (error) => {
             clearTimeout(timeoutId);
             if (watchId) {
@@ -546,28 +542,20 @@ $activePage = 'campus';
           );
           
           let accuracyMessage = `Location updated! Accuracy: ${Math.round(accuracy)}m`;
-          if (accuracy < 20) {
+          
+          // Adjusted thresholds for desktop/WiFi users
+          if (accuracy < 50) {
             accuracyMessage += ' (Excellent)';
             Toast.success(accuracyMessage);
-          } else if (accuracy < 50) {
+          } else if (accuracy < 200) {
             accuracyMessage += ' (Good)';
             Toast.success(accuracyMessage);
-          } else if (accuracy < 100) {
+          } else if (accuracy < 500) {
             accuracyMessage += ' (Fair)';
-            Toast.success(accuracyMessage);
-          } else if (accuracy < 1000) {
-            accuracyMessage += ' (Poor - try again for better accuracy)';
-            Toast.warning(accuracyMessage);
+            Toast.info(accuracyMessage);
           } else {
-            // Very poor accuracy (likely desktop/IP-based geolocation)
-            accuracyMessage += ' (Poor - try again for better accuracy)';
+            accuracyMessage += ' (Low accuracy)';
             Toast.warning(accuracyMessage);
-            Toast.info(
-              'For best accuracy:\n' +
-              '• Use a mobile device with GPS, OR\n' +
-              '• Enter coordinates manually from Google Maps',
-              { duration: 8000 }
-            );
           }
           
           resetLocationButton();
