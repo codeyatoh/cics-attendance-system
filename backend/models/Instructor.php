@@ -90,6 +90,21 @@ class Instructor {
         $this->db->query($sql, $params);
         return true;
     }
+
+    /**
+     * Get all subjects assigned to an instructor
+     * 
+     * @param int $instructorId The ID of the instructor
+     * @return array Array of subjects assigned to the instructor
+     */
+    public function getAssignedSubjects($instructorId) {
+        $sql = "SELECT s.* 
+                FROM subjects s
+                WHERE s.instructor_id = :instructor_id
+                ORDER BY s.code, s.name";
+                
+        return $this->db->fetchAll($sql, [':instructor_id' => $instructorId]);
+    }
 }
 
 
